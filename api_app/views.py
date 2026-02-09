@@ -8,3 +8,4 @@ from rest_framework.response import Response
 @api_view(['GET'])
 def hello_world(request):
     return Response({"message": "Hello from your hiking API!"})
+
