@@ -1,0 +1,15 @@
+# Core Web Framework
+django>=5.0
+
+# API Development (Required for CRUD and JSON responses)
+djangorestframework
+django-cors-headers
+
+# Documentation (Required for PDF/Swagger API docs)
+drf-spectacular
+
+# External Data & Utilities (For fetching public datasets)
+requests
+
+# Deployment (Standard for hosting on PythonAnywhere)
+gunicorn
