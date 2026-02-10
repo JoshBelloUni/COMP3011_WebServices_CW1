@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api_app'
+    'api_app',
+    'leaflet'
 ]
 
 MIDDLEWARE = [
@@ -76,7 +77,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -122,3 +123,41 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+import os, sys, glob, osgeo
+
+# Only configure GDAL/GEOS manually on Windows
+if os.name == 'nt':
+    # 1. Find the base directory of your Python environment (venv)
+    # This logic handles running from 'Scripts' or the root venv folder
+    venv_base = os.path.dirname(os.path.dirname(sys.executable))
+    site_packages = os.path.join(venv_base, "Lib", "site-packages", "osgeo")
+    
+    # Fallback: if osgeo isn't found, try looking one level deeper (sometimes happens with different python installs)
+    if not os.path.exists(site_packages):
+        venv_base = os.path.dirname(sys.executable)
+        site_packages = os.path.join(venv_base, "Lib", "site-packages", "osgeo")
+
+    # 2. Find and Set GDAL
+    gdal_candidates = glob.glob(os.path.join(site_packages, "gdal*.dll"))
+    if gdal_candidates:
+        GDAL_LIBRARY_PATH = gdal_candidates[0]
+    
+    # 3. Find and Set GEOS (New Part!)
+    geos_candidates = glob.glob(os.path.join(site_packages, "geos_c.dll"))
+    if geos_candidates:
+        GEOS_LIBRARY_PATH = geos_candidates[0]
+
+# SPATIALITE CONFIGURATION
+# Define the path to your spatialite folder
+SPATIALITE_LIBRARY_PATH = r'C:\spatialite\mod_spatialite.dll'
+
+# dd the folder to the Windows System PATH strictly for this runtime
+# This ensures Python can find the *dependencies* (like libgeos, libproj) inside that folder
+spatialite_dir = os.path.dirname(SPATIALITE_LIBRARY_PATH)
+if spatialite_dir not in os.environ['PATH']:
+    os.environ['PATH'] = spatialite_dir + ';' + os.environ['PATH']
+
+# PROJ LIB Config
+PROJ_LIB = os.path.join(os.path.dirname(osgeo.__file__), 'data', 'proj')
+os.environ['PROJ_LIB'] = PROJ_LIB
