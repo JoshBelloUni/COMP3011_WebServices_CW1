@@ -13,3 +13,6 @@ requests
 
 # Deployment (Standard for hosting on PythonAnywhere)
 gunicorn
+
+gdal-3.11.4-cp311-cp311-win_amd64.whl
+django-leaflet

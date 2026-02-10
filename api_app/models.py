@@ -1,13 +1,17 @@
-from django.db import models
+from django.contrib.gis.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
 class Trail(models.Model):
 
-    title = models.CharField(max_length=100)
-    region = models.CharField(max_length=50)
-    elevation_gain = models.FloatField()
+    name = models.CharField(max_length=100)
+    elevation_gain = models.FloatField(default=0.0)
+    length = models.FloatField(default=0.0)
+
+    region = models.CharField(
+        max_length=50,
+        default=0.0)
 
     latitude = models.DecimalField(
         max_digits=8, 
@@ -21,13 +25,18 @@ class Trail(models.Model):
         validators=[MinValueValidator(-180), MaxValueValidator(180)]
     )
 
-    safety_score = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    popularity = models.FloatField(
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0.0
     )
 
-    popularity = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)]
-    )
+    path = models.MultiLineStringField(null=True)
+
+    difficulty = models.CharField(max_length=50, default="Moderate")
+    estimated_duration = models.CharField(max_length=50, default="0h")
+
+    def __str__(self):
+        return self.name
 
 class Review(models.Model):
 
