@@ -1,18 +1,12 @@
-# Core Web Framework
 django>=5.0
-
-# API Development (Required for CRUD and JSON responses)
 djangorestframework
 django-cors-headers
-
-# Documentation (Required for PDF/Swagger API docs)
 drf-spectacular
-
-# External Data & Utilities (For fetching public datasets)
 requests
-
-# Deployment (Standard for hosting on PythonAnywhere)
-gunicorn
 
 gdal-3.11.4-cp311-cp311-win_amd64.whl
 django-leaflet
+django_filters
+
+# Deployment (Standard for hosting on PythonAnywhere)
+gunicorn
