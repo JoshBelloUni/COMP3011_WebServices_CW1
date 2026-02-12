@@ -55,7 +55,8 @@ class Review(models.Model):
 class TransportLink(models.Model):
     
     trail = models.ForeignKey(Trail, on_delete=models.CASCADE, related_name='transport_links')
-    
+    name = models.CharField(max_length=100)
+
     TRANSPORT_TYPES = [
         ('BUS', 'Bus Stop'),
         ('TRAIN', 'Train Station'),
@@ -63,16 +64,6 @@ class TransportLink(models.Model):
     ]
     
     type = models.CharField(max_length=10, choices=TRANSPORT_TYPES)
-    station_name = models.CharField(max_length=100)
-    distance_from_trailhead_km = models.FloatField()
-
-class CarParks(models.Model):
-
-    trail = models.ForeignKey(Trail, on_delete=models.CASCADE, related_name='car_parks')
-    name = models.CharField(max_length=100)
-    capacity = models.IntegerField(help_text="Number of spaces")
-    has_disabled_parking = models.BooleanField(default=False)
-    is_free = models.BooleanField(default=False)
 
     latitude = models.DecimalField(
         max_digits=8, 
@@ -85,4 +76,28 @@ class CarParks(models.Model):
         decimal_places=6,
         validators=[MinValueValidator(-180), MaxValueValidator(180)]
     )
+
+class CarPark(models.Model):
+
+    trail = models.ForeignKey(Trail, on_delete=models.CASCADE, related_name='car_parks')
+    name = models.CharField(max_length=100)
+    has_disabled_parking = models.BooleanField(default=False, null=True, blank=True)
+    is_free = models.BooleanField(default=False, null=True, blank=True)
+
+    latitude = models.DecimalField(
+        max_digits=8, 
+        decimal_places=6,
+        validators=[MinValueValidator(-90), MaxValueValidator(90)]
+    )
+    
+    longitude = models.DecimalField(
+        max_digits=9, 
+        decimal_places=6,
+        validators=[MinValueValidator(-180), MaxValueValidator(180)]
+    )
+
+    capacity = models.IntegerField(
+        help_text="Number of spaces", 
+        null=True,
+        blank=True)
 

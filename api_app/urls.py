@@ -19,5 +19,5 @@ router.register(r'carparks', CarParkViewSet)   # http://127.0.0.1:8000/api/carpa
 
 urlpatterns = [
     # Include the router URLs
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
 ]

@@ -1,7 +1,43 @@
 from rest_framework import serializers
-from .models import Trail, Review, TransportLink, CarParks
+from .models import Trail, Review, TransportLink, CarPark
 import requests
 from django.core.cache import cache
+
+# --- REVIEW SERIALIZER ---
+class ReviewSerializer(serializers.ModelSerializer):
+    """
+    Serializer for User Reviews.
+    - user: ReadOnlyField ensures the username is displayed, but cannot be edited.
+    - trail: ForeignKey linking the review to a specific trail.
+    """
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Review
+        fields = ['id', 'title', 'trail', 'user', 'rating', 'content', 'created_on']
+        read_only_fields = ['created_at'] # Timestamp is auto-generated
+
+
+# --- TRANSPORT SERIALIZER ---
+class TransportSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Public Transport links (Bus/Train).
+    - Returns simple coordinates (lat/lon) for map pins.
+    """
+    class Meta:
+        model = TransportLink
+        fields = ['id', 'trail', 'name', 'type', 'latitude', 'longitude']
+
+
+# --- CAR PARK SERIALIZER ---
+class CarParkSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Car Parks.
+    - Includes capacity and 'is_free' boolean for filtering.
+    """
+    class Meta:
+        model = CarPark
+        fields = ['id', 'trail', 'name', 'capacity', 'is_free', 'latitude', 'longitude', 'has_disabled_parking']
 
 class TrailSerializer(serializers.ModelSerializer):
 
@@ -10,7 +46,11 @@ class TrailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trail
-        fields = '__all__'
+        fields = [
+            'id', 'name', 'region', 'difficulty', 'length', 'elevation_gain', 
+            'popularity', 'path', 'car_parks', 'transport_links', 'safety_score',
+            'current_weather'
+        ]
 
     def get_current_weather(self, obj):
         cache_key = f"weather_trail_{obj.id}"
@@ -62,38 +102,3 @@ class TrailSerializer(serializers.ModelSerializer):
 
             return max(score, 0)
     
-# --- REVIEW SERIALIZER ---
-class ReviewSerializer(serializers.ModelSerializer):
-    """
-    Serializer for User Reviews.
-    - user: ReadOnlyField ensures the username is displayed, but cannot be edited.
-    - trail: ForeignKey linking the review to a specific trail.
-    """
-    user = serializers.ReadOnlyField(source='user.username')
-
-    class Meta:
-        model = Review
-        fields = ['id', 'title', 'trail', 'user', 'rating', 'content', 'created_on']
-        read_only_fields = ['created_at'] # Timestamp is auto-generated
-
-
-# --- TRANSPORT SERIALIZER ---
-class TransportSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Public Transport links (Bus/Train).
-    - Returns simple coordinates (lat/lon) for map pins.
-    """
-    class Meta:
-        model = TransportLink
-        fields = ['id', 'trail', 'name', 'type', 'latitude', 'longitude']
-
-
-# --- CAR PARK SERIALIZER ---
-class CarParkSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Car Parks.
-    - Includes capacity and 'is_free' boolean for filtering.
-    """
-    class Meta:
-        model = CarParks
-        fields = ['id', 'trail', 'name', 'capacity', 'is_free', 'latitude', 'longitude']
