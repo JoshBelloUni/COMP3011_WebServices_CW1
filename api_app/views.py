@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, filters, generics
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Trail, Review, TransportLink, CarParks
+from .models import Trail, Review, TransportLink, CarPark
 from .serializers import (
     TrailSerializer, 
     ReviewSerializer, 
@@ -104,9 +104,9 @@ class CarParkViewSet(viewsets.ReadOnlyModelViewSet):
     API endpoint for Car Parks.
     Read-only reference data.
     """
-    queryset = CarParks.objects.all()
+    queryset = CarPark.objects.all()
     serializer_class = CarParkSerializer
     permission_classes = [permissions.AllowAny]
     
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['trail', 'is_free'] # Usage: /api/carparks/?is_free=true
+    filterset_fields = ['trail', 'is_free', 'has_disabled_parking'] # Usage: /api/carparks/?is_free=true

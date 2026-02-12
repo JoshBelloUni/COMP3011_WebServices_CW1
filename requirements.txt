@@ -6,7 +6,7 @@ requests
 
 gdal-3.11.4-cp311-cp311-win_amd64.whl
 django-leaflet
-django_filters
+django-filter
 
 # Deployment (Standard for hosting on PythonAnywhere)
 gunicorn
