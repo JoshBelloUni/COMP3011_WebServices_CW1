@@ -3,14 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, filters, generics
 from django_filters.rest_framework import DjangoFilterBackend
-from djangorestframework_mcp import mcp_viewset
+from djangorestframework_mcp.decorators import mcp_viewset
 
 from .models import Trail, Review, TransportLink, CarPark, TrailLogBook
 
 from .serializers import (
-    TrailSerializer, 
-    ReviewSerializer, 
-    TransportSerializer, 
+    TrailSerializer,
+    ReviewSerializer,
+    TransportSerializer,
     CarParkSerializer,
     TrailLogBookSerializer
 )
@@ -20,13 +20,11 @@ def hello_world(request):
     return Response({"message": "Hello from your hiking API!"})
 
 # 1. List all trails (GET /trails/)
-@mcp_viewset()
 class TrailList(generics.ListCreateAPIView):
     queryset = Trail.objects.all()
     serializer_class = TrailSerializer
 
 # 2. Get one trail (GET /trails/5/)
-@mcp_viewset()
 class TrailDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Trail.objects.all()
     serializer_class = TrailSerializer
@@ -42,7 +40,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # Read permissions are allowed to any request (GET, HEAD, OPTIONS)
         if request.method in permissions.SAFE_METHODS:
             return True
-        
+
         print(f"LOGGED IN USER: {request.user} (ID: {request.user.id})")
         print(f"REVIEW OWNER:   {obj.user} (ID: {obj.user.id})")
         print(f"MATCH?          {obj.user == request.user}")
@@ -62,7 +60,7 @@ class TrailViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Trail.objects.all()
     serializer_class = TrailSerializer
     permission_classes = [permissions.AllowAny] # Open to everyone
-    
+
     # Enable search and filtering
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name', 'region']      # Search by name (e.g., ?search=Mam Tor)
@@ -78,7 +76,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    
+
     # Security: Auth required to post, Owner required to edit
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -100,7 +98,7 @@ class TransportViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TransportLink.objects.all()
     serializer_class = TransportSerializer
     permission_classes = [permissions.AllowAny]
-    
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['trail', 'type'] # Usage: /api/transport/?type=Train
 
@@ -113,7 +111,7 @@ class CarParkViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CarPark.objects.all()
     serializer_class = CarParkSerializer
     permission_classes = [permissions.AllowAny]
-    
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['trail', 'is_free', 'has_disabled_parking'] # Usage: /api/carparks/?is_free=true
 

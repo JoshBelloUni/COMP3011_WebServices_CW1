@@ -11,21 +11,33 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 1. Choose the correct database file path
+if 'PYTHONANYWHERE_DOMAIN' in os.environ:
+    # Use the absolute path on the PythonAnywhere server
+    DB_PATH = '/home/joshbelloUOL/COMP3011_WebServices_CW1/db.sqlite3'
+else:
+    # Use the dynamic path for Local Windows or the Examiner's PC
+    DB_PATH = BASE_DIR / 'db.sqlite3'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)%prnh47-z%u#$z00blir)+$*=6^be1=wifpa@+t08jd19la10'
+load_dotenv()
+SECRET_KEY = os.getenv(
+    'SECRET_KEY',
+    'django-insecure-)%prnh47-z%u#$z00blir)+$*=6^be1=wifpa@+t08jd19la10'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['joshbellouol.eu.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -80,7 +92,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_PATH,
     }
 }
 
@@ -126,40 +138,41 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import os, sys, glob, osgeo
+import os, sys, glob
 
 # Only configure GDAL/GEOS manually on Windows
 if os.name == 'nt':
-    # 1. Find the base directory of your Python environment (venv)
-    # This logic handles running from 'Scripts' or the root venv folder
+    import osgeo
+    # Find the base directory of your Python environment (venv)
     venv_base = os.path.dirname(os.path.dirname(sys.executable))
     site_packages = os.path.join(venv_base, "Lib", "site-packages", "osgeo")
-    
-    # Fallback: if osgeo isn't found, try looking one level deeper (sometimes happens with different python installs)
+
     if not os.path.exists(site_packages):
         venv_base = os.path.dirname(sys.executable)
         site_packages = os.path.join(venv_base, "Lib", "site-packages", "osgeo")
 
-    # 2. Find and Set GDAL
+    # Set GDAL and GEOS Paths for Windows
     gdal_candidates = glob.glob(os.path.join(site_packages, "gdal*.dll"))
     if gdal_candidates:
         GDAL_LIBRARY_PATH = gdal_candidates[0]
-    
-    # 3. Find and Set GEOS (New Part!)
+
     geos_candidates = glob.glob(os.path.join(site_packages, "geos_c.dll"))
     if geos_candidates:
         GEOS_LIBRARY_PATH = geos_candidates[0]
 
-# SPATIALITE CONFIGURATION
-# Define the path to your spatialite folder
-SPATIALITE_LIBRARY_PATH = r'C:\spatialite\mod_spatialite.dll'
+    # Windows SpatiaLite Path (Adjusted for your local machine)
+    SPATIALITE_LIBRARY_PATH = r'C:\spatialite\mod_spatialite.dll'
 
-# dd the folder to the Windows System PATH strictly for this runtime
-# This ensures Python can find the *dependencies* (like libgeos, libproj) inside that folder
-spatialite_dir = os.path.dirname(SPATIALITE_LIBRARY_PATH)
-if spatialite_dir not in os.environ['PATH']:
-    os.environ['PATH'] = spatialite_dir + ';' + os.environ['PATH']
+    # Add folder to PATH so Windows finds dependencies
+    spatialite_dir = os.path.dirname(SPATIALITE_LIBRARY_PATH)
+    if os.path.exists(spatialite_dir) and spatialite_dir not in os.environ['PATH']:
+        os.environ['PATH'] = spatialite_dir + ';' + os.environ['PATH']
 
-# PROJ LIB Config
-PROJ_LIB = os.path.join(os.path.dirname(osgeo.__file__), 'data', 'proj')
-os.environ['PROJ_LIB'] = PROJ_LIB
+    # PROJ LIB Config
+    PROJ_LIB = os.path.join(os.path.dirname(osgeo.__file__), 'data', 'proj')
+    os.environ['PROJ_LIB'] = PROJ_LIB
+
+# 3. PYTHONANYWHERE CONFIG (Production Linux)
+elif 'PYTHONANYWHERE_DOMAIN' in os.environ:
+    # Use the pre-installed Linux SpatiaLite library
+    SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
