@@ -8,6 +8,7 @@ gdal-3.11.4-cp311-cp311-win_amd64.whl
 django-leaflet
 django-filter
 django-rest-framework-mcp
+python-dotenv
 
 # Deployment (Standard for hosting on PythonAnywhere)
 gunicorn
