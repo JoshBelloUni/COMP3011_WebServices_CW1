@@ -168,6 +168,15 @@ To ensure a smooth transition from local development to PythonAnywhere, the foll
 * Database: Utilized absolute pathing for db.sqlite3 to maintain persistence across web worker restarts.
 
 ---
+## API Documentation
+
+The full technical specification for this API is provided in the accompanying PDF manual. This includes endpoint definitions, authentication requirements, and JSON request/response examples.
+
+**[Download API Documentation (PDF)](./docs/API_Documentation.pdf)**
+
+*Note: For an interactive version of this documentation, you can also visit the [Postman Web Portal](https://documenter.getpostman.com/view/52318963/2sBXcLhJEH).*
+
+---
 ## Use of Generative AI
 
 - **Dataset Discovery** - AI tools found necessary external APIs such as OpenStreetMap, elevation API and Weather API.
