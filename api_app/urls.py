@@ -22,4 +22,5 @@ router.register(r'logbook', TrailLogBookViewSet, basename='logbook') # http://12
 urlpatterns = [
     # Include the router URLs
     path('api/', include(router.urls)),
+    path('mcp/', include('djangorestframework_mcp.urls')),
 ]

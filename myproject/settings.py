@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'api_app',
     'leaflet',
     'django_filters',
+    'djangorestframework_mcp',
 ]
 
 MIDDLEWARE = [

@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, filters, generics
 from django_filters.rest_framework import DjangoFilterBackend
+from djangorestframework_mcp import mcp_viewset
 
 from .models import Trail, Review, TransportLink, CarPark, TrailLogBook
 
@@ -19,11 +20,13 @@ def hello_world(request):
     return Response({"message": "Hello from your hiking API!"})
 
 # 1. List all trails (GET /trails/)
+@mcp_viewset()
 class TrailList(generics.ListCreateAPIView):
     queryset = Trail.objects.all()
     serializer_class = TrailSerializer
 
 # 2. Get one trail (GET /trails/5/)
+@mcp_viewset()
 class TrailDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Trail.objects.all()
     serializer_class = TrailSerializer
@@ -49,7 +52,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 
 # --- VIEWSETS ---
-
+@mcp_viewset()
 class TrailViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows trails to be viewed or searched.
@@ -65,7 +68,7 @@ class TrailViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['name', 'region']      # Search by name (e.g., ?search=Mam Tor)
     filterset_fields = ['region', 'difficulty'] # Filter (e.g., ?difficulty=Easy)
 
-
+@mcp_viewset()
 class ReviewViewSet(viewsets.ModelViewSet):
     """
     API endpoint for User Reviews.
@@ -88,7 +91,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         # Automatically attach the logged-in user as the author
         serializer.save(user=self.request.user)
 
-
+@mcp_viewset()
 class TransportViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for Public Transport links (Bus/Train).
@@ -101,7 +104,7 @@ class TransportViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['trail', 'type'] # Usage: /api/transport/?type=Train
 
-
+@mcp_viewset()
 class CarParkViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for Car Parks.
