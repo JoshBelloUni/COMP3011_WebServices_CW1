@@ -117,7 +117,7 @@ Once the server is running (`python manage.py runserver`), access the API at `ht
 * `PUT /api/reviews/{id}/` - Edit your own review (**Owner only**).
 * `DELETE /api/reviews/{id}/` - Delete your own review (**Owner only**).
 
-### **Trail Reports**
+### **Trail Logbook**
 *To be implemented*
 * *Will contain all CRUD operations*
 

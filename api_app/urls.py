@@ -4,7 +4,8 @@ from .views import (
     TrailViewSet, 
     ReviewViewSet, 
     TransportViewSet, 
-    CarParkViewSet
+    CarParkViewSet,
+    TrailLogBookViewSet
 )
 
 # Create a router and register our viewsets with it.
@@ -16,6 +17,7 @@ router.register(r'trails', TrailViewSet)       # http://127.0.0.1:8000/api/trail
 router.register(r'reviews', ReviewViewSet)     # http://127.0.0.1:8000/api/reviews/
 router.register(r'transport', TransportViewSet)# http://127.0.0.1:8000/api/transport/
 router.register(r'carparks', CarParkViewSet)   # http://127.0.0.1:8000/api/carparks/
+router.register(r'logbook', TrailLogBookViewSet, basename='logbook') # http://127.0.0.1:8000/api/logbook/
 
 urlpatterns = [
     # Include the router URLs

@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from .models import Trail, Review, TransportLink, CarPark
+from .models import Trail, Review, TransportLink, CarPark, TrailLogBook
 from leaflet.admin import LeafletGeoAdmin
 
 @admin.register(Trail)
@@ -21,3 +21,8 @@ class TransportAdmin(LeafletGeoAdmin):
 class CarParkAdmin(LeafletGeoAdmin):
     # This gives you the map on the Edit/Detail page
     list_display = ('name', 'capacity')
+
+@admin.register(TrailLogBook)
+class LogbookAdmin(LeafletGeoAdmin):
+    # This gives you the map on the Edit/Detail page
+    list_display = ('trail', 'user')

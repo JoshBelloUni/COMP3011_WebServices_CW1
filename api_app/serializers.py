@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Trail, Review, TransportLink, CarPark
+from .models import Trail, Review, TransportLink, CarPark, TrailLogBook
 import requests
 from django.core.cache import cache
 
@@ -101,4 +101,11 @@ class TrailSerializer(serializers.ModelSerializer):
             if temp > 30: score -= 20    # Too Hot
 
             return max(score, 0)
-    
+
+class TrailLogBookSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    trail_name = serializers.ReadOnlyField(source='trail.name') # Shows name instead of just ID
+
+    class Meta:
+        model = TrailLogBook
+        fields = ['id', 'trail', 'trail_name', 'user', 'date_hiked', 'duration_minutes', 'weather', 'notes']

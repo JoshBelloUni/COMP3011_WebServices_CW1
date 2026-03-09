@@ -3,12 +3,15 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, filters, generics
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Trail, Review, TransportLink, CarPark
+
+from .models import Trail, Review, TransportLink, CarPark, TrailLogBook
+
 from .serializers import (
     TrailSerializer, 
     ReviewSerializer, 
     TransportSerializer, 
-    CarParkSerializer
+    CarParkSerializer,
+    TrailLogBookSerializer
 )
 
 @api_view(['GET'])
@@ -110,3 +113,21 @@ class CarParkViewSet(viewsets.ReadOnlyModelViewSet):
     
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['trail', 'is_free', 'has_disabled_parking'] # Usage: /api/carparks/?is_free=true
+
+class TrailLogBookViewSet(viewsets.ModelViewSet):
+    serializer_class = TrailLogBookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the hiking logs
+        for the currently authenticated user.
+        """
+        return TrailLogBook.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        """
+        When creating a new log, automatically set the 'user' field
+        to the current user.
+        """
+        serializer.save(user=self.request.user)

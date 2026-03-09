@@ -100,4 +100,16 @@ class CarPark(models.Model):
         help_text="Number of spaces", 
         null=True,
         blank=True)
+    
+class TrailLogBook(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    trail = models.ForeignKey(Trail, on_delete=models.CASCADE)
+    date_hiked = models.DateField()
+    duration_minutes = models.IntegerField(help_text="Time taken in minutes")
+    weather = models.CharField(max_length=50, choices=[
+        ('Sunny', 'Sunny'), 
+        ('Rainy', 'Rainy'), 
+        ('Cloudy', 'Cloudy'),
+        ('Snow', 'Snow')])
+    notes = models.TextField(blank=True, help_text="How was this hike?")
 
