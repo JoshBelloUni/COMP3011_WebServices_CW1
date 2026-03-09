@@ -34,14 +34,18 @@ Before running this project, ensure you have the following installed:
     ```
 
 2.  **Create and Activate Virtual Environment**
-    ```bash
-    # Windows
-    python -m venv venv
-    .\venv\Scripts\activate
+    *Because GeoDjango relies on system-level C-libraries (GDAL), the installation process differs based on your operating system:*
 
-    # Mac/Linux
-    python3 -m venv venv
-    source venv/bin/activate
+    **For Linux / Mac:**
+    These environments natively support the GDAL libraries. Use the standard requirements file:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    **For Windows (Local Development):**
+    Windows requires a pre-compiled `.whl` file for GDAL to install correctly without throwing a C++ compiler error. Use the Windows-specific requirements file (which automatically includes the standard requirements):
+    ```bash
+    pip install -r requirements-win.txt
     ```
 
 3.  **Install Dependencies**
@@ -57,7 +61,7 @@ Before running this project, ensure you have the following installed:
     ```
 
 5.  **Create Admin User**
-    You need a superuser to access the Admin panel and manage data.
+    You need a superuser to access the Admin panel and manage data. A superuser user has been created for Marker use.
     ```bash
     python manage.py createsuperuser
     ```
@@ -109,7 +113,7 @@ Once the server is running (`python manage.py runserver`), access the API at `ht
 ### **Services**
 * `GET /api/carparks/` - List all car parks.
 * `GET /api/transport/` - List bus/train stops.
-* `/{id}/` - Get details on specific car park or public transport stop
+* `GET /api/transport/{id}/` - Get details on specific car park or public transport stop
 
 ### **Reviews (CRUD)**
 * `GET /api/reviews/` - List all reviews.
@@ -118,8 +122,10 @@ Once the server is running (`python manage.py runserver`), access the API at `ht
 * `DELETE /api/reviews/{id}/` - Delete your own review (**Owner only**).
 
 ### **Trail Logbook**
-*To be implemented*
-* *Will contain all CRUD operations*
+* `GET /api/logbook/` - List all logs in your logbook (**Auth required**).
+* `POST /api/logbook/` - Create a log (**Auth required**).
+* `PUT /api/logbook/{id}/` - Edit a single log (**Owner only**).
+* `DELETE /api/logbook/{id}/` - Delete your own log (**Owner only**).
 
 ---
 
@@ -136,7 +142,7 @@ Once the server is running (`python manage.py runserver`), access the API at `ht
 ## Key Design Decisions
 
 1.  **Haversine Optimization:**
-    To link thousands of car parks to trails efficiently, the import script uses a "Pre-check" subtraction filter. If a point is >5km away based on simple coordinate subtraction, the expensive Haversine trigonometric calculation is skipped. This improves import speed by ~90%.
+    To link thousands of car parks to trails efficiently, the import script uses a "Pre-check" subtraction filter. If a point is >5km away based on simple coordinate subtraction, the expensive Haversine trigonometric calculation is skipped.
 
 2.  **Data Honesty (Nullable Fields):**
     OpenStreetMap data is often incomplete. Instead of defaulting missing values (like `capacity` or `cost`) to "0" or "Free", this API uses `Nullable` fields. This allows the frontend to distinguish between "Zero Capacity" (closed) and "Unknown Capacity" (data missing), preventing misleading information.
@@ -144,14 +150,22 @@ Once the server is running (`python manage.py runserver`), access the API at `ht
 3.  **Naismith's Rule Implementation:**
     Trail difficulty is not arbitrary; it is calculated programmatically based on length and elevation gain using Naismith's Rule (1 hour per 5km + 1 hour per 600m ascent).
 
+4. **Safety Score Calculation:**
+    The safety score is a metric that determines how safe a trail is. It combines many factors: temperature, weather and wind speed. These factors are derived from the open-metro API.
+
 ---
 
-## Testing
+# Deployment
 
-To run the automated test suite:
-```bash
-python manage.py test
-```
+This application has been deployed on https://joshbellouol.eu.pythonanywhere.com. Replace the localhost url with this.
+
+To ensure a smooth transition from local development to PythonAnywhere, the following adjustments were made:
+
+* Library Paths: Dynamic selection of mod_spatialite.so (Linux) vs mod_spatialite.dll (Windows).
+
+* Security: Updated ALLOWED_HOSTS to include the pythonanywhere.com domain.
+
+* Database: Utilized absolute pathing for db.sqlite3 to maintain persistence across web worker restarts.
 
 ---
 ## Use of Generative AI

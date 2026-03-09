@@ -79,7 +79,7 @@ class TrailSerializer(serializers.ModelSerializer):
                 
             score = 100
             
-            # --- 1. Extract Data safely (Open-Meteo Format) ---
+            # --- 1. Extract Data safely ---
             # Use .get() to avoid crashing if a key is missing
             temp = weather.get('temperature', 10)   # Default to 10°C if missing
             wind = weather.get('windspeed', 0)      # Default to 0 if missing
