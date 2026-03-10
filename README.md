@@ -22,6 +22,10 @@ Before running this project, ensure you have the following installed:
     * *Windows:* Install via OSGeo4W or use a pre-built wheel.
     * *Mac:* `brew install gdal`
     * *Linux:* `sudo apt-get install binutils libproj-dev gdal-bin`
+3. **Windows Specific SpaciaLite**
+    * Download the SpatiaLite binaries (mod_spatialite-5.0.1-win-amd64.7z).
+    * Extract contents into the root directory of the project.
+    * The settings.py is configured to automatically detect this folder using BASE_DIR / 'spatialite'.
 
 ---
 

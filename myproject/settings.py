@@ -161,7 +161,8 @@ if os.name == 'nt':
         GEOS_LIBRARY_PATH = geos_candidates[0]
 
     # Windows SpatiaLite Path (Adjusted for your local machine)
-    SPATIALITE_LIBRARY_PATH = r'C:\spatialite\mod_spatialite.dll'
+    SPATIALITE_LIBRARY_PATH = str(BASE_DIR / 'spatialite' / 'mod_spatialite.dll')
+    os.environ['PATH'] = str(BASE_DIR / 'spatialite') + os.pathsep + os.environ['PATH']
 
     # Add folder to PATH so Windows finds dependencies
     spatialite_dir = os.path.dirname(SPATIALITE_LIBRARY_PATH)
