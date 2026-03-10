@@ -9,20 +9,16 @@ class TrailAdmin(LeafletGeoAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(LeafletGeoAdmin):
-    # This gives you the map on the Edit/Detail page
     list_display = ('title', 'rating')
 
 @admin.register(TransportLink)
 class TransportAdmin(LeafletGeoAdmin):
-    # This gives you the map on the Edit/Detail page
     list_display = ('name', 'type')
 
 @admin.register(CarPark)
 class CarParkAdmin(LeafletGeoAdmin):
-    # This gives you the map on the Edit/Detail page
     list_display = ('name', 'capacity')
 
 @admin.register(TrailLogBook)
 class LogbookAdmin(LeafletGeoAdmin):
-    # This gives you the map on the Edit/Detail page
     list_display = ('trail', 'user')
