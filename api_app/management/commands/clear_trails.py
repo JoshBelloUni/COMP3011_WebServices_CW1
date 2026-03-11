@@ -12,7 +12,6 @@ class Command(BaseCommand):
 
         # 2. Reset the ID counter (SQLite specific)
         with connection.cursor() as cursor:
-            # Note: The table name is usually 'appname_modelname'
             cursor.execute("DELETE FROM sqlite_sequence WHERE name='api_app_trail';")
             
         self.stdout.write(self.style.SUCCESS('Success! Database cleared and IDs reset to 0.'))

@@ -113,7 +113,7 @@ class Command(BaseCommand):
     def import_carparks(self):
         self.stdout.write(self.style.SUCCESS("\n--- STEP 1: CAR PARKS ---"))
         
-        # Load all trails into memory ONCE (Vital for speed)
+        # Load all trails into memory ONCE
         all_trails = list(Trail.objects.all())
         self.stdout.write(f"  > Loaded {len(all_trails)} trails for comparison.")
         

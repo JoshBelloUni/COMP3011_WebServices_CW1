@@ -84,7 +84,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Fetching trails...")
 
-        # Same query as before (Nature + Relations)
         overpass_url = "http://overpass-api.de/api/interpreter"
         bbox = "(53.15, -2.10, 54.00, -1.30)"
         keywords = "Walk|Trail|Way|Loop|Circuit|Circular|Reservoir|Edge|Pike|Tor"
@@ -157,7 +156,7 @@ class Command(BaseCommand):
             # FILTER 1: Too short?
             if total_len < 1.5: continue
             
-            # FILTER 2: Too long? (Optional)
+            # FILTER 2: Too long?
             if SKIP_EXTREME_TRAILS and total_len > MAX_TRAIL_LENGTH:
                 continue
 
