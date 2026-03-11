@@ -138,6 +138,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Throttling 
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',   # Limits unauthorized requests
+        'user': '1000/day'   # Limits requests for 'Marker' and other users
+    }
+}
+
 import os, sys, glob
 
 # Only configure GDAL/GEOS manually on Windows
@@ -173,7 +185,7 @@ if os.name == 'nt':
     PROJ_LIB = os.path.join(os.path.dirname(osgeo.__file__), 'data', 'proj')
     os.environ['PROJ_LIB'] = PROJ_LIB
 
-# 3. PYTHONANYWHERE CONFIG (Production Linux)
+# PYTHONANYWHERE CONFIG (Production Linux)
 elif 'PYTHONANYWHERE_DOMAIN' in os.environ:
     # Use the pre-installed Linux SpatiaLite library
     SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'

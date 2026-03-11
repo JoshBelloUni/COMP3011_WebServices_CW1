@@ -178,7 +178,7 @@ The full technical specification for this API is provided in the accompanying PD
 
 **[Download API Documentation (PDF)](./docs/API_Documentation.pdf)**
 
-*Note: For an interactive version of this documentation, you can also visit the [Postman Web Portal](https://documenter.getpostman.com/view/52318963/2sBXcLhJEH).*
+*Note: For an interactive version of this documentation, you can also visit the [Postman Web Portal](https://documenter.getpostman.com/view/52318963/2sBXcLhJEH). You can see more example requests on the web documentation*
 
 ---
 ## Use of Generative AI
