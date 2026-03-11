@@ -8,7 +8,7 @@ A GeoDjango-based REST API designed to provide hiking trails, car parks, and tra
 * **Automated Ingestion:** Custom management commands to fetch and parse data from OpenStreetMap via the Overpass API.
 * **Smart Linking:** Automatically links car parks and transport stops to the nearest trail using optimized Haversine distance calculations.
 * **Search & Filtering:** Filter trails by difficulty, region, and search by name.
-* **User Reviews:** Full CRUD system for users to rate and review trails (with permission handling).
+* **User Reviews and Logbook:** Full CRUD system for users to rate, review and log trails (with permission handling).
 * **Data Integrity:** Handles missing external data gracefully (e.g., distinguishing between "0 capacity" and "unknown capacity").
 
 ---
@@ -17,7 +17,7 @@ A GeoDjango-based REST API designed to provide hiking trails, car parks, and tra
 
 Before running this project, ensure you have the following installed:
 
-1.  **Python 3.8+**
+1.  **Python 3.8+** (Tested on 3.11.0)
 2.  **GDAL Library** (Required for GeoDjango)
     * *Windows:* Install via OSGeo4W or use a pre-built wheel.
     * *Mac:* `brew install gdal`
@@ -29,7 +29,7 @@ Before running this project, ensure you have the following installed:
 
 *Note: if using Linux without sudo privilages, do this instead*
 1. Install Miniconda
-2. `conda create -n venv python=3.10`
+2. `conda create -n venv python=3.11`
 3. `conda activate venv1`
 4. `conda install -c conda-forge gdal`
 5. Continue as normal
@@ -56,23 +56,20 @@ Before running this project, ensure you have the following installed:
     **For Windows (Local Development):**
     Windows requires a pre-compiled `.whl` file for GDAL to install correctly without throwing a C++ compiler error. Use the Windows-specific requirements file (which automatically includes the standard requirements):
     ```bash
+    py -3.11 -m venv venv
+    .\venv\Scripts\activate
     pip install -r requirements-win.txt
     ```
 
-3.  **Install Dependencies**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Database Migration**
+3.  **Database Migration**
     Initialize the database with geospatial support.
     ```bash
     python manage.py makemigrations
     python manage.py migrate
     ```
 
-5.  **Create Admin User**
-    You need a superuser to access the Admin panel and manage data. A superuser user has been created for Marker use.
+4.  **Create Admin User**
+    You need a superuser to access the Admin panel and manage data.
     ```bash
     python manage.py createsuperuser
     ```
@@ -84,7 +81,7 @@ Before running this project, ensure you have the following installed:
 
 ## Data Import Scripts
 
-This API relies on external data. You **must** run these commands in the following order to populate the database. The scripts currently gather trail data from the peak district and Leeds area.
+This API relies on external data. You **must** run these commands in the following order to populate the database. The scripts currently gather trail data from the peak district and Leeds area. 
 
 ### 1. Import Hiking Trails
 Fetches walking routes, calculates difficulty using Naismith's Rule, and saves geometry.
@@ -110,7 +107,9 @@ python manage.py clear_transport # Clears Transport links
 
 ## API Endpoints
 
-Once the server is running (`python manage.py runserver`), access the API at `http://127.0.0.1:8000/api`.
+Run the server locally using `python manage.py runserver`.
+
+Once the server is running, access the API at `http://127.0.0.1:8000/api`.
 
 ### **Trails**
 * `GET /api/trails/` - List all trails.
@@ -185,7 +184,7 @@ The full technical specification for this API is provided in the accompanying PD
 
 **[Download API Documentation (PDF)](./docs/API_Documentation.pdf)**
 
-*Note: For an interactive version of this documentation, you can also visit the [Postman Web Portal](https://documenter.getpostman.com/view/52318963/2sBXcLhJEH). You can see more example requests on the web documentation*
+*Note: For an interactive version of this documentation, you can also visit the [Postman Web Portal](https://documenter.getpostman.com/view/52318963/2sBXcLhJEH). You can see more example requests on the web documentation.*
 
 ---
 ## Use of Generative AI
